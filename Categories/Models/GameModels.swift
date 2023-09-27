@@ -6,10 +6,19 @@
 //
 
 import Foundation
+import SwiftUI
 
-let maxRemainingTime = 10
+let gameTitle = "Categories"
+let maxRemainingTime = 100
+var appBackground: some View {
+    Image("background")
+        .resizable()
+        .scaledToFill()
+        .ignoresSafeArea()
+        .brightness(-0.1)
+}
 
-let categories = [
+let allNormalCategories = [
     "Fictional Characters",
     "Famous Landmarks",
     "Things You Can Eat",
@@ -42,7 +51,7 @@ let categories = [
     "Things You Can Buy Online"
 ]
 
-let randomCategories = categories.randomElements(numberElements: 3)
+
 
 enum GameType {
     case single, peer, online
@@ -60,14 +69,50 @@ enum GameType {
 }
 
 struct Player: Identifiable, Codable {
-    var id: UUID { UUID() }
+    var id: String
     var name: String
-    var score: Int
-    var isHost: Bool
-    var answers: [Answer]
+    var score: Int = 0
+    var isHost: Bool = false
+    var answers: [Answer] = []
+    var markee: String = ""
+    
+    init(id: String = UUID().uuidString, name: String, score: Int = 0, isHost: Bool = false, answers: [Answer] = []) {
+        self.id = id
+        self.name = name
+        self.score = score
+        self.isHost = isHost
+        self.answers = answers
+    }
 }
 
-struct Answer: Codable {
+struct Answer: Codable, Identifiable {
+    var id: String = UUID().uuidString
     var category: String
-    var answer: String
+    var text: String = ""
+    var points: Int = 0
+}
+
+
+struct GameMove: Codable {
+    enum Action: Int, Codable {
+        case start, categories, markers, sendAnswers, next, reset, end
+    }
+    
+    let action: Action
+    var UUIDString: String? = nil
+    var playerName: String? = nil
+    var categories: [String]? = nil
+    var letter: String? = nil
+    var markers: [Marker]? = nil
+    var answers: [Answer]? = nil
+    
+    
+    func data() -> Data? {
+        try? JSONEncoder().encode(self)
+    }
+    
+    struct Marker: Codable {
+        let marker: String
+        let markee: String
+    }
 }

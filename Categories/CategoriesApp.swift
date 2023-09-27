@@ -11,7 +11,7 @@ import SwiftUI
 struct CategoriesApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            FrontPage()
         }
     }
 }
