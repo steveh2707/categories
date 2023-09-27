@@ -41,7 +41,7 @@ struct MPPeersView: View {
             }
             
             Button("Start Game") {
-                vm.player.isHost = true
+                vm.players[0].isHost = true
                 mpvm.initiateStartGame()
             }
             .buttonStyle(.borderedProminent)

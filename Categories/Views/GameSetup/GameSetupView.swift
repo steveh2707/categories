@@ -72,7 +72,7 @@ struct GameSetupView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 //            .background(Color.theme.background)
             .fullScreenCover(isPresented: $vm.playing) {
-                ShowInputOrEndView()
+                GameController()
                     .environmentObject(vm)
                     .environmentObject(mpvm)
 //                    .environmentObject(gkvm)

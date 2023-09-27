@@ -9,13 +9,16 @@ import Foundation
 import SwiftUI
 
 let gameTitle = "Categories"
-let maxRemainingTime = 100
+let maxRemainingTime = 120
 var appBackground: some View {
-    Image("background")
-        .resizable()
-        .scaledToFill()
-        .ignoresSafeArea()
-        .brightness(-0.1)
+    GeometryReader { geo in
+        Image("background")
+            .resizable()
+            .scaledToFill()
+            .frame(width: geo.size.width, alignment: .center)
+            .ignoresSafeArea()
+            .brightness(-0.1)
+    }
 }
 
 let allNormalCategories = [
@@ -69,20 +72,24 @@ enum GameType {
 }
 
 struct Player: Identifiable, Codable {
-    var id: String
+    var id: String = UUID().uuidString
     var name: String
+    var roundScore: Int = 0
     var score: Int = 0
     var isHost: Bool = false
     var answers: [Answer] = []
     var markee: String = ""
+    var roundScoreReceived = false
+//    var answersReceived = false
     
-    init(id: String = UUID().uuidString, name: String, score: Int = 0, isHost: Bool = false, answers: [Answer] = []) {
-        self.id = id
-        self.name = name
-        self.score = score
-        self.isHost = isHost
-        self.answers = answers
-    }
+//    init(id: String = UUID().uuidString, name: String, score: Int = 0, isHost: Bool = false, answers: [Answer] = [], wating: Bool = true) {
+//        self.id = id
+//        self.name = name
+//        self.score = score
+//        self.isHost = isHost
+//        self.answers = answers
+//        self.waiting = true
+//    }
 }
 
 struct Answer: Codable, Identifiable {
@@ -95,7 +102,7 @@ struct Answer: Codable, Identifiable {
 
 struct GameMove: Codable {
     enum Action: Int, Codable {
-        case start, categories, markers, sendAnswers, next, reset, end
+        case start, categories, markers, sendAnswers, roundScores, nextRound, end
     }
     
     let action: Action
@@ -105,6 +112,7 @@ struct GameMove: Codable {
     var letter: String? = nil
     var markers: [Marker]? = nil
     var answers: [Answer]? = nil
+    var roundScore: Int? = nil
     
     
     func data() -> Data? {

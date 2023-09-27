@@ -35,7 +35,7 @@ class MultipeerVM: NSObject, ObservableObject {
     
     init(yourName: String) {
         myPeerId = MCPeerID(displayName: yourName)
-        session = MCSession(peer: myPeerId)
+        session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: .none)
         nearbyServiceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
         nearbyServiceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
         super.init()
@@ -83,7 +83,7 @@ class MultipeerVM: NSObject, ObservableObject {
     
     @MainActor
     func initiateStartGame() {
-        game?.player.isHost = true
+        game?.players[0].isHost = true
         let gameMove = GameMove(action: .start)
         sendMove(gameMove: gameMove)
         startGame()
@@ -93,24 +93,36 @@ class MultipeerVM: NSObject, ObservableObject {
     private func startGame() {
         self.stopAdvertisingAndBrowsing()
         for player in session.connectedPeers {
-            game?.otherPlayers.append(Player(name: player.displayName))
+            game?.players.append(Player(name: player.displayName))
         }
         assignMarkersAndMarkees()
-
+        
         game?.startGame()
     }
     
+    @MainActor
+    func sendCategoriesAndLetter() {
+        let gameMove = GameMove(action: .categories, categories: game?.categories, letter: game?.selectedLetter)
+        sendMove(gameMove: gameMove)
+    }
+    
+    @MainActor
+    func sendAnswersToBeMarked(answers: [Answer]) {
+        let gameMove = GameMove(action: .sendAnswers, playerName: myPeerId.displayName, answers: answers)
+        sendMove(gameMove: gameMove)
+    }
+    
+    
+    @MainActor
     private func assignMarkersAndMarkees() {
         // logic to let host decide who marks whos answers
-        if let isHost = game?.player.isHost, isHost {
-            if let otherPlayers = game?.otherPlayers, let me = game?.player {
-                var allPlayers = otherPlayers
-                allPlayers.append(me)
+        if let isHost = game?.players[0].isHost, isHost {
+            if let players = game?.players {
                 
                 // assign markers and markees
                 var markers = [GameMove.Marker]()
-                for i in 0...allPlayers.count-1 {
-                    markers.append(GameMove.Marker(marker: allPlayers[i].name, markee: allPlayers[(i+1)%allPlayers.count].name))
+                for i in 0...players.count-1 {
+                    markers.append(GameMove.Marker(marker: players[i].name, markee: players[(i+1)%players.count].name))
                 }
                 
                 assignOwnMarkee(markers: markers)
@@ -122,58 +134,48 @@ class MultipeerVM: NSObject, ObservableObject {
         }
     }
     
+    @MainActor
     private func assignOwnMarkee(markers: [GameMove.Marker]) {
         // assign own markee
         for marker in markers {
-            if marker.marker == game?.player.name {
-                game?.player.markee = marker.markee
+            if marker.marker == game?.players[0].name {
+                game?.players[0].markee = marker.markee
             }
         }
+    }
+    
+    func submitMarkeeScore(playerName: String, points: Int) {
+        let gameMove = GameMove(action: .roundScores, playerName: playerName, roundScore: points)
+        sendMove(gameMove: gameMove)
     }
 
     
     @MainActor
-    func initiateEndGame() {
+    func initiateNextRound() {
+        let gameMove = GameMove(action: .nextRound)
+        sendMove(gameMove: gameMove)
+        game?.nextRound()
+    }
+    
+//    @MainActor
+//    func initiatePlayAgain() {
+//        let gameMove = GameMove(action: .playAgain)
+//        sendMove(gameMove: gameMove)
+//        game?.playAgain()
+//    }
+    
+    @MainActor
+    func initiateCloseGame() {
         let gameMove = GameMove(action: .end)
         sendMove(gameMove: gameMove)
-        endGame()
+        closeGame()
     }
     
     @MainActor
-    private func endGame() {
-        game?.player.isHost = false
-        game?.endGame()
+    private func closeGame() {
+        disconnectFromPeers()
+        game?.closeGame()
     }
-    
-    //    @MainActor
-    //    func initiatePlayAgain() {
-    //        let gameMove = GameMove(action: .reset)
-    //        sendMove(gameMove: gameMove)
-    //        game?.resetGame()
-    //    }
-    //
-    //    @MainActor
-    //    func initiateEndGame() {
-    //        let gameMove = GameMove(action: .end)
-    //        sendMove(gameMove: gameMove)
-    //        endGame()
-    //    }
-    //
-    //    @MainActor
-    //    func initiateGoToNextQuestion() {
-    //        let gameMove = GameMove(action: .next)
-    //        sendMove(gameMove: gameMove)
-    //        game?.goToNextQuestion()
-    //    }
-    //
-    //
-    //    @MainActor
-    //    private func endGame() {
-    //        self.paired = false
-    //        self.session.disconnect()
-    //        game?.endGame()
-    //    }
-    
     
     func sendMove(gameMove: GameMove) {
         if !session.connectedPeers.isEmpty {
@@ -187,22 +189,13 @@ class MultipeerVM: NSObject, ObservableObject {
         }
     }
     
-    func sendCategoriesAndLetter() {
-        let gameMove = GameMove(action: .categories, categories: game?.categories, letter: game?.selectedLetter)
-        sendMove(gameMove: gameMove)
-    }
-    
-    func sendAnswersToBeMarked(answers: [Answer]) {
-        let gameMove = GameMove(action: .sendAnswers, playerName: myPeerId.displayName, answers: answers)
-        sendMove(gameMove: gameMove)
-    }
-    
+
     
     @MainActor
     func handleReceivedMoves(gameMove: GameMove) {
         switch gameMove.action {
         case .start:
-            self.game?.player.isHost = false
+            self.game?.players[0].isHost = false
             self.startGame()
         case .categories:
             if let categories = gameMove.categories, let letter = gameMove.letter {
@@ -216,18 +209,22 @@ class MultipeerVM: NSObject, ObservableObject {
             if let answers = gameMove.answers, let name = gameMove.playerName {
                 let i = self.game?.findIndexOfPlayer(name: name)
                 if let i, i > -1 {
-                    self.game?.otherPlayers[i].answers = answers
+                    self.game?.players[i].answers = answers
                 }
             }
-        case .next:
-            //            self.game?.goToNextQuestion()
-            break
-        case .reset:
-            //            self.game?.resetGame()
-            break
+        case .roundScores:
+            if let playerName = gameMove.playerName, let roundScore = gameMove.roundScore {
+                let i = self.game?.findIndexOfPlayer(name: playerName)
+                if let i, i > -1 {
+                    self.game?.assignRoundScore(playerIndex: i, roundScore: roundScore)
+                }
+            }
+        case .nextRound:
+            self.game?.nextRound()
+//        case .playAgain:
+//            self.game?.playAgain()
         case .end:
-            self.endGame()
-            break
+            self.closeGame()
         }
     }
 }
