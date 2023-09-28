@@ -43,7 +43,8 @@ struct InputView: View {
         .padding(.horizontal, 20)
         .background(
             appBackground
-                .ignoresSafeArea(.keyboard, edges: .all)
+//                .ignoresSafeArea(.keyboard, edges: .all)
+//                .blur(radius: 5)
         )
         .onAppear {
             
