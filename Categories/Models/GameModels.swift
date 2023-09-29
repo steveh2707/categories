@@ -8,8 +8,10 @@
 import Foundation
 import SwiftUI
 
-let gameTitle = "Categories"
+let gameTitle = "Ten In Time"
+
 let maxRemainingTime = 120
+
 var appBackground: some View {
     GeometryReader { geo in
         Image("background")
@@ -51,7 +53,34 @@ let allNormalCategories = [
     "Body Parts",
     "TV Shows",
     "Hobbies",
-    "Things You Can Buy Online"
+    "Things You Can Buy Online",
+    "Things You Can Smell",
+    "90s Pop Songs",
+    "Pizza Toppings",
+    "Modes of Transportation",
+    "Items in a Junk Drawer",
+    "Dog Breeds",
+    "Movie Genres",
+    "Types of Weather",
+    "Things You Can Sip",
+    "Cartoon Villains",
+    "Mythical Creatures",
+    "Types of Hats",
+    "Things That Are Sticky",
+    "Video Game Titles",
+    "Types of Candy",
+    "Historical Events",
+    "Words with Double Letters",
+    "Items in a Supermarket",
+    "Singers or Bands",
+    "Things That Are Soft",
+    "Famous Artists",
+    "Things That Are Square",
+    "Types of Fruit",
+    "Things That Are Sharp",
+    "Types of Flowers",
+    "Things You Can Drink",
+    "Sports Teams"
 ]
 
 

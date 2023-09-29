@@ -15,6 +15,7 @@ extension Color {
 /// Create theme to be used throughout app
 struct ColorTheme {
     let accent = Color("AccentColor")
-    let red = Color("inputRed")
+    let inputRed = Color("inputRed")
+    let markingBlue = Color("markingBlue")
     let background = Color("background")
 }

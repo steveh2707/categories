@@ -80,11 +80,11 @@ class GameVM: ObservableObject {
         self.remainingTime = maxRemainingTime
     }
     
-    func fetchCategoriesAndLetter() {
+    func fetchCategoriesAndLetter(index: Int = 0) {
         categories = allNormalCategories.randomElements(numberElements: 10)
         
         for category in categories {
-            players[0].answers.append(Answer(category: category))
+            players[index].answers.append(Answer(category: category))
         }
         
         let letters: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -100,7 +100,6 @@ class GameVM: ObservableObject {
         self.selectedLetter = letter
     }
 
-    
     func findIndexOfPlayer(name: String) -> Int {
         for (i, player) in players.enumerated() {
             if player.name == name {
@@ -110,18 +109,32 @@ class GameVM: ObservableObject {
         return -1
     }
     
-    func checkIfAnswerDuplicated(index: Int, answerText: String) -> Bool {
+    private func checkIfAnswerUsedByMultiplePlayers(answerIndex: Int, answerText: String) -> Bool {
         var count = 0
         for player in players {
-            if player.answers[index].text.lowercased() == answerText.lowercased() {
+            if player.answers[answerIndex].text.trimmingCharacters(in: .whitespaces).lowercased() == answerText.trimmingCharacters(in: .whitespaces).lowercased() {
                 count += 1
             }
         }
         return count > 1
     }
     
-    func checkIfAnswerStartsWithCorrectLetter(answerText: String) -> Bool {
+    private func checkIfAnswerUsedMultipleTimesByPlayer(playerIndex: Int, answerText: String) -> Bool {
+        var count = 0
+        for answer in players[playerIndex].answers {
+            if answer.text.trimmingCharacters(in: .whitespaces).lowercased() == answerText.trimmingCharacters(in: .whitespaces).lowercased() {
+                count += 1
+            }
+        }
+        return count > 1
+    }
+    
+    private func checkIfAnswerStartsWithCorrectLetter(answerText: String) -> Bool {
         String(answerText.first!).lowercased() == selectedLetter.lowercased()
+    }
+    
+    func automatedAnswerChecking(questionIndex: Int, playerIndex: Int, answerText: String) -> Bool {
+        !checkIfAnswerUsedByMultiplePlayers(answerIndex: questionIndex, answerText: answerText) && !answerText.isEmpty && checkIfAnswerStartsWithCorrectLetter(answerText: answerText) && !checkIfAnswerUsedMultipleTimesByPlayer(playerIndex: playerIndex, answerText: answerText)
     }
     
     func assignRoundScore(playerIndex: Int, roundScore: Int) {
@@ -138,5 +151,29 @@ class GameVM: ObservableObject {
             }
         }
         return allAnswered
+    }
+    
+
+}
+
+
+
+
+extension GameVM {
+    static func previewInstance() -> GameVM {
+        let vm = GameVM(yourName: "Player 1")
+        
+
+        vm.players.append(Player(name: "Player 2"))
+        vm.fetchCategoriesAndLetter()
+        vm.fetchCategoriesAndLetter(index: 1)
+        vm.players[0].markee = "Player 2"
+        vm.players[1].markee = "Player 1"
+        vm.players[0].score = 10
+        vm.players[0].roundScore = 10
+        vm.players[0].roundScoreReceived = true
+        vm.players[1].score = 20
+        
+        return vm
     }
 }

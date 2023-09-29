@@ -22,6 +22,7 @@
 		AAD626702ABD90C00070E6DB /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD6266F2ABD90C00070E6DB /* GameModels.swift */; };
 		AAD626732ABD95140070E6DB /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD626722ABD95140070E6DB /* Array.swift */; };
 		AAD626762ABD95FE0070E6DB /* GameVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD626752ABD95FE0070E6DB /* GameVM.swift */; };
+		AAEA8C7A2AC6CF1F00CFFA3E /* NextRoundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEA8C792AC6CF1F00CFFA3E /* NextRoundView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,8 @@
 		AAD6266F2ABD90C00070E6DB /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
 		AAD626722ABD95140070E6DB /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		AAD626752ABD95FE0070E6DB /* GameVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameVM.swift; sourceTree = "<group>"; };
+		AAEA8C782AC5F5D300CFFA3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AAEA8C792AC6CF1F00CFFA3E /* NextRoundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextRoundView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +76,7 @@
 		AAD6265C2ABCD07B0070E6DB /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				AAEA8C782AC5F5D300CFFA3E /* Info.plist */,
 				AAD6265D2ABCD07B0070E6DB /* CategoriesApp.swift */,
 				AA5D82982ABDB36000D56CB5 /* FrontPage.swift */,
 				AAD6266D2ABD907C0070E6DB /* Views */,
@@ -144,6 +148,7 @@
 				AA5D829E2ABDD61200D56CB5 /* GameController.swift */,
 				AAD6266B2ABCD0930070E6DB /* InputView.swift */,
 				AA5D82A22AC2EF2300D56CB5 /* MarkingView.swift */,
+				AAEA8C792AC6CF1F00CFFA3E /* NextRoundView.swift */,
 			);
 			path = PlayGame;
 			sourceTree = "<group>";
@@ -220,6 +225,7 @@
 			files = (
 				AAD626762ABD95FE0070E6DB /* GameVM.swift in Sources */,
 				AA5D82A12ABDE17F00D56CB5 /* MPPeersView.swift in Sources */,
+				AAEA8C7A2AC6CF1F00CFFA3E /* NextRoundView.swift in Sources */,
 				AA5D82992ABDB36000D56CB5 /* FrontPage.swift in Sources */,
 				AAD6266C2ABCD0930070E6DB /* InputView.swift in Sources */,
 				AA5D82A32AC2EF2300D56CB5 /* MarkingView.swift in Sources */,
@@ -289,7 +295,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -346,7 +352,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -361,25 +367,30 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Categories/Preview Content\"";
 				DEVELOPMENT_TEAM = 4EDERT4V6A;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Categories;
+				INFOPLIST_FILE = Categories/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Ten In Time";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Would like to play Categories";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.01;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephenhanna.Categories;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -391,25 +402,30 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Categories/Preview Content\"";
 				DEVELOPMENT_TEAM = 4EDERT4V6A;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Categories;
+				INFOPLIST_FILE = Categories/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Ten In Time";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Would like to play Categories";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.01;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephenhanna.Categories;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

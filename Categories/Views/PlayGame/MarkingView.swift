@@ -12,8 +12,6 @@ struct MarkingView: View {
     @EnvironmentObject var vm: GameVM
     @EnvironmentObject var mpvm: MultipeerVM
     
-//    let indexOfPlayerToBeMarked = vm.findIndexOfPlayer(name: vm.players[0].markee)
-    
     var indexOfPlayerToBeMarked: Int {
         vm.findIndexOfPlayer(name: vm.players[0].markee)
     }
@@ -43,59 +41,60 @@ struct MarkingView: View {
                             ForEach(vm.players[indexOfPlayerToBeMarked].answers.indices, id: \.self) { i in
                                 
                                 let answer = vm.players[indexOfPlayerToBeMarked].answers[i]
-                                let answerAccepted = !vm.checkIfAnswerDuplicated(index: i, answerText: answer.text) && !answer.text.isEmpty && vm.checkIfAnswerStartsWithCorrectLetter(answerText: answer.text)
-                                
+                                let answerAccepted = vm.automatedAnswerChecking(questionIndex: i, playerIndex: indexOfPlayerToBeMarked, answerText: answer.text)
                                 HStack {
-                                    Text(answer.category)
-                                    
-                                    Spacer()
-                                    
-                                    Text("\(answer.points)")
-                                        .padding(.trailing)
-                                }
-                                .fontWeight(.semibold)
-                                .padding(.top, 5)
-                                .padding(.bottom, -5)
-                                ZStack {
-                                    HStack {
-                                        HStack {
-                                            Text(answer.text)
-                                                .padding(.horizontal)
-                                            Spacer()
+                                    VStack(alignment: .leading) {
+                                        Text(answer.category)
+                                            .fontWeight(.semibold)
+                                            .padding(.top, 5)
+                                            .padding(.bottom, -5)
+                                        ZStack {
+                                            HStack {
+                                                HStack {
+                                                    Text(answer.text.isEmpty ? " " : answer.text)
+                                                        .padding(.horizontal)
+                                                    Spacer()
+                                                }
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 8)
+                                                        .foregroundColor(.theme.markingBlue)
+                                                        .brightness(-0.15)
+                                                )
+//                                                .padding(.trailing, 5)
+                                                
+                                            }
+                                            .padding(.vertical, 4)
+                                            
+                                            if !answerAccepted {
+                                                Divider()
+                                                    .frame(height: 3)
+                                                    .overlay(.black)
+                                                    .padding(.horizontal, 5)
+                                            }
+                                            
                                         }
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .foregroundColor(.theme.red)
-                                                .brightness(-0.15)
-                                        )
                                         .padding(.trailing, 5)
-                                        HStack {
+                                    }
+                                    HStack {
+                                        Button {
+                                            vm.players[indexOfPlayerToBeMarked].answers[i].points = 10
+                                        } label: {
                                             Image(systemName: answer.points > 0 ? "checkmark.square.fill" : "checkmark.square")
-                                                .foregroundColor(answer.points > 0 ? Color.green : Color.black)
-                                                .onTapGesture {
-                                                    if answerAccepted {
-                                                        vm.players[indexOfPlayerToBeMarked].answers[i].points = 10
-                                                    }
-                                                }
-                                            Image(systemName: answer.points == 0 ? "x.square.fill" : "x.square")
-                                                .foregroundColor(answer.points == 0 ? Color.red : Color.black)
-                                                .onTapGesture {
-                                                    if answerAccepted {
-                                                        vm.players[indexOfPlayerToBeMarked].answers[i].points = 0
-                                                    }
-                                                }
+                                                .foregroundColor(answerAccepted ? (answer.points > 0 ? Color.green : Color.black) : .gray)
                                         }
-                                        .font(.title3)
+                                        .disabled(!answerAccepted)
                                         
+                                        Button {
+                                            vm.players[indexOfPlayerToBeMarked].answers[i].points = 0
+                                        } label: {
+                                            Image(systemName: answer.points == 0 ? "x.square.fill" : "x.square")
+                                                .foregroundColor(answerAccepted ? (answer.points == 0 ? Color.red : Color.black) : .gray)
+                                        }
+                                        .disabled(!answerAccepted)
+                     
+
                                     }
-                                    .padding(.vertical, 2)
-                                    
-                                    if !answerAccepted {
-                                        Divider()
-                                            .frame(height: 2)
-                                            .overlay(.black)
-                                    }
-                                    
+                                    .font(.title)
                                 }
                             }
                         }
@@ -104,7 +103,7 @@ struct MarkingView: View {
                     }
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .foregroundColor(.theme.red)
+                            .foregroundColor(.theme.markingBlue)
                     )
                     .padding(.horizontal, 20)
                     .padding(.top)
@@ -113,9 +112,6 @@ struct MarkingView: View {
                 }
             }
         }
-        .onAppear {
-            
-        }
         
     }
     
@@ -123,7 +119,7 @@ struct MarkingView: View {
         HStack {
             ZStack {
                 RoundedRectangle(cornerRadius: 15)
-                    .foregroundColor(.theme.red)
+                    .foregroundColor(.theme.markingBlue)
                 Text(vm.selectedLetter)
                     .font(.largeTitle)
                     .fontWeight(.bold)
@@ -133,12 +129,18 @@ struct MarkingView: View {
             Spacer()
             
             ZStack {
-                Capsule()
-                    .foregroundColor(.theme.red)
-                Label("\(totalPoints)", systemImage: "star.circle.fill")
-                    .font(.title2)
+//                Capsule()
+//                    .foregroundColor(.theme.markingBlue)
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(.theme.markingBlue)
+                VStack {
+                    Text(vm.players[indexOfPlayerToBeMarked].name)
+                        .font(.title3)
+                    Label("\(totalPoints)", systemImage: "star.circle.fill")
+                        .font(.title2)
+                }
             }
-            .frame(width: 120, height: 60)
+            .frame(width: 120, height: 70)
             Spacer()
             Button {
                 if vm.gameType == .peer {
@@ -149,7 +151,7 @@ struct MarkingView: View {
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 15)
-                        .foregroundColor(.theme.red)
+                        .foregroundColor(.theme.markingBlue)
                     Image(systemName: "checkmark.square")
                         .font(.title)
                 }
@@ -162,8 +164,8 @@ struct MarkingView: View {
     
 }
 
-//#Preview {
-//    MarkingView()
-//        .environmentObject(GameVM(yourName: "Sample"))
-//        .environmentObject(MultipeerVM(yourName: "Sample"))
-//}
+#Preview {
+    MarkingView()
+        .environmentObject(GameVM.previewInstance())
+        .environmentObject(MultipeerVM(yourName: "Sample"))
+}

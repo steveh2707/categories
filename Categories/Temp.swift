@@ -26,7 +26,7 @@ struct Temp: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .foregroundColor(.theme.red)
+                            .foregroundColor(.theme.inputRed)
                     )
                     
                     VStack {
@@ -51,7 +51,7 @@ struct Temp: View {
                     }
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .foregroundColor(.theme.red)
+                            .foregroundColor(.theme.inputRed)
                     )
                     .padding()
                     

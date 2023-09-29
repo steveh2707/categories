@@ -35,7 +35,7 @@ struct InputView: View {
             .padding(.bottom)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .foregroundColor(.theme.red)
+                    .foregroundColor(.theme.inputRed)
             )
         }
         .scrollIndicators(.hidden)
@@ -85,7 +85,7 @@ struct InputView: View {
         HStack {
             ZStack {
                 RoundedRectangle(cornerRadius: 15)
-                    .foregroundColor(.theme.red)
+                    .foregroundColor(.theme.inputRed)
                 Text(vm.selectedLetter)
                     .font(.largeTitle)
                     .fontWeight(.bold)
@@ -99,7 +99,7 @@ struct InputView: View {
                     ForEach(vm.players) { player in
                         ZStack {
                             Circle()
-                                .foregroundColor(.theme.red)
+                                .foregroundColor(.theme.inputRed)
                             Text(player.name.prefix(2))
                         }
                         .frame(width: 30, height: 30)
@@ -108,7 +108,7 @@ struct InputView: View {
                 .padding(.bottom, -5)
                 ZStack {
                     Capsule()
-                        .foregroundColor(.theme.red)
+                        .foregroundColor(.theme.inputRed)
                     Label("\(vm.remainingTime)", systemImage: "clock")
                         .font(.title2)
                 }
@@ -130,7 +130,7 @@ struct InputView: View {
             } label: {
                 ZStack {
                     RoundedRectangle(cornerRadius: 15)
-                        .foregroundColor(.theme.red)
+                        .foregroundColor(.theme.inputRed)
                     Image(systemName: "line.3.horizontal")
                         .font(.title)
                 }
@@ -159,7 +159,7 @@ struct TextInput: TextFieldStyle {
             .background(
                 RoundedRectangle(cornerRadius: 10)
                 //                    .stroke(Color.white, lineWidth:2)
-                    .foregroundColor(.theme.red)
+                    .foregroundColor(.theme.inputRed)
                     .brightness(-0.15)
             )
     }
